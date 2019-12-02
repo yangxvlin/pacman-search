@@ -131,12 +131,6 @@ Win Rate:      1/1 (1.00)
 Record:        Win
 ```
 
-#### test2
-```python pacman.py -l mediumDottedMaze -p StayEastSearchAgent --frameTime 0```
-```
-
-```
-
 #### test4
 ```python pacman.py -l bigMaze -p SearchAgent -a fn=ucs --frameTime 0```
 ```
