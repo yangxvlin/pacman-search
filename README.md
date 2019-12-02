@@ -12,4 +12,4 @@ UC Berkeley CS188 Intro to AI - Project 1
 ```python pacman.py -l bigMaze -z .5 -p SearchAgent```
 
 ## my notes
-```problem.getSuccessors``` return: [((x, y), DIRECTION, cost)]
+```problem.getSuccessors``` return: ```[((x, y), DIRECTION, cost)]```
