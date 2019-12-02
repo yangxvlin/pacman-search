@@ -72,6 +72,29 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+# ***************************** my code starts: *******************************
+
+
+def back_track(goal_position, start_position, history):
+    """
+    :param goal_position: (x, y) position of the goal
+    :param start_position: (x, y) position of the start
+    :param history: a dictionary of {(x, y):
+                            (parent Position, direction from parent Position)}
+    :return: a list of Direction from `start_position` to `goal_position`
+    """
+    result = []
+
+    current_position = goal_position
+
+    while current_position != start_position:
+        next_position, next_direction = history[current_position]
+        result.append(next_direction)
+        current_position = next_position
+
+    return result[::-1]
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,7 +110,25 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    opened_list = util.Stack()
+    opened_list.push(problem.getStartState())
+    closed_list = set()
+    history = {}
+
+    while not opened_list.isEmpty():
+        current_pos = opened_list.pop()
+
+        if problem.isGoalState(current_pos):
+            return back_track(current_pos, problem.getStartState(), history)
+
+        closed_list.add(current_pos)
+
+        for next_state in problem.getSuccessors(current_pos):
+            next_pos, next_direction, _ = next_state
+
+            if next_pos not in closed_list:
+                opened_list.push(next_pos)
+                history[next_pos] = (current_pos, next_direction)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
