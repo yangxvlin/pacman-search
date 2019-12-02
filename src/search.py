@@ -130,10 +130,30 @@ def depthFirstSearch(problem):
                 opened_list.push(next_pos)
                 history[next_pos] = (current_pos, next_direction)
 
+
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    opened_list = util.Queue()
+    opened_list.push(problem.getStartState())
+    closed_list = set()
+    history = {}
+
+    while not opened_list.isEmpty():
+        current_pos = opened_list.pop()
+
+        if problem.isGoalState(current_pos):
+            return back_track(current_pos, problem.getStartState(), history)
+
+        closed_list.add(current_pos)
+
+        for next_state in problem.getSuccessors(current_pos):
+            next_pos, next_direction, _ = next_state
+
+            if next_pos not in closed_list:
+                opened_list.push(next_pos)
+                history[next_pos] = (current_pos, next_direction)
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""

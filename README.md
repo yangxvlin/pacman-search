@@ -49,5 +49,73 @@ Win Rate:      1/1 (1.00)
 Record:        Win
 ```
 
+### q2
+#### test1
+```python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs --frameTime 0```
+```
+[SearchAgent] using function bfs
+[SearchAgent] using problem type PositionSearchProblem
+Path found with total cost of 68 in 0.0 seconds
+Search nodes expanded: 275
+Pacman emerges victorious! Score: 442
+Average Score: 442.0
+Scores:        442.0
+Win Rate:      1/1 (1.00)
+Record:        Win
+```
+
+#### test2
+```python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5  --frameTime 0```
+```
+[SearchAgent] using function bfs
+[SearchAgent] using problem type PositionSearchProblem
+Path found with total cost of 210 in 0.0 seconds
+Search nodes expanded: 620
+Pacman emerges victorious! Score: 300
+Average Score: 300.0
+Scores:        300.0
+Win Rate:      1/1 (1.00)
+Record:        Win
+```
+
+#### test3
+```python eightpuzzle.py -fn=bfs```
+```
+D:\python\python.exe E:/backup/code/python/pacman/src/eightpuzzle.py -fn=bfs
+A random puzzle:
+-------------
+| 3 | 5 | 1 |
+-------------
+| 6 | 4 |   |
+-------------
+| 7 | 8 | 2 |
+-------------
+BFS found a path of 11 moves: ['down', 'left', 'left', 'up', 'right', 'up', 'right', 'down', 'left', 'left', 'up']
+After 1 move: down
+-------------
+| 3 | 5 | 1 |
+-------------
+| 6 | 4 | 2 |
+-------------
+| 7 | 8 |   |
+-------------
+Press return for the next state...
+
+...
+...
+...
+
+After 11 moves: up
+-------------
+|   | 1 | 2 |
+-------------
+| 3 | 4 | 5 |
+-------------
+| 6 | 7 | 8 |
+-------------
+Press return for the next state...
+```
+
 ## my notes
-```problem.getSuccessors``` return: ```[((x, y), DIRECTION, cost)]```
+1. ```problem.getSuccessors``` return: ```[((x, y), DIRECTION, cost)]```
+2. If Pacman moves too slowly for you, try the option --frameTime 0.
