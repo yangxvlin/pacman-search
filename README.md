@@ -137,6 +137,20 @@ Record:        Win
 
 ```
 
+#### test4
+```python pacman.py -l bigMaze -p SearchAgent -a fn=ucs --frameTime 0```
+```
+[SearchAgent] using function ucs
+[SearchAgent] using problem type PositionSearchProblem
+Path found with total cost of 210 in 0.0 seconds
+Search nodes expanded: 620
+Pacman emerges victorious! Score: 300
+Average Score: 300.0
+Scores:        300.0
+Win Rate:      1/1 (1.00)
+Record:        Win
+```
+
 ### q4
 #### test1
 ```python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic --frameTime 0```
