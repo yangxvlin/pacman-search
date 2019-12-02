@@ -159,8 +159,6 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     import collections
 
-    default_cost = 1
-
     opened_list = util.PriorityQueue()
     opened_list.push(problem.getStartState(), 0)
     closed_list = set()
@@ -169,7 +167,6 @@ def uniformCostSearch(problem):
 
     while not opened_list.isEmpty():
         current_pos = opened_list.pop()
-        cost_so_far[current_pos] += default_cost
 
         if problem.isGoalState(current_pos):
             return back_track(current_pos, problem.getStartState(), history)
@@ -177,8 +174,8 @@ def uniformCostSearch(problem):
         closed_list.add(current_pos)
 
         for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, _ = next_state
-            new_cost = cost_so_far[current_pos] + default_cost
+            next_pos, next_direction, step_cost = next_state
+            new_cost = cost_so_far[current_pos] + step_cost
 
             if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
                 history[next_pos] = (current_pos, next_direction)
@@ -200,8 +197,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     import collections
 
-    default_cost = 1
-
     opened_list = util.PriorityQueue()
     opened_list.push(problem.getStartState(), 0)
     closed_list = set()
@@ -210,7 +205,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     while not opened_list.isEmpty():
         current_pos = opened_list.pop()
-        cost_so_far[current_pos] += default_cost
 
         if problem.isGoalState(current_pos):
             return back_track(current_pos, problem.getStartState(), history)
@@ -218,8 +212,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         closed_list.add(current_pos)
 
         for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, _ = next_state
-            new_cost = cost_so_far[current_pos]
+            next_pos, next_direction, step_cost = next_state
+            new_cost = cost_so_far[current_pos] + step_cost
 
             if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
                 history[next_pos] = (current_pos, next_direction)
