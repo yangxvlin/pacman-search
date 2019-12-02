@@ -157,8 +157,35 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    import collections
+
+    default_cost = 1
+
+    opened_list = util.PriorityQueue()
+    opened_list.push(problem.getStartState(), 0)
+    closed_list = set()
+    history = {}
+    cost_so_far = collections.defaultdict(lambda: 0)
+
+    while not opened_list.isEmpty():
+        current_pos = opened_list.pop()
+        cost_so_far[current_pos] += default_cost
+
+        if problem.isGoalState(current_pos):
+            return back_track(current_pos, problem.getStartState(), history)
+
+        closed_list.add(current_pos)
+
+        for next_state in problem.getSuccessors(current_pos):
+            next_pos, next_direction, _ = next_state
+            new_cost = cost_so_far[current_pos] + default_cost
+
+            if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
+                history[next_pos] = (current_pos, next_direction)
+                priority = new_cost + nullHeuristic(next_pos, problem)
+                opened_list.push(next_pos, priority)
+                cost_so_far[next_pos] = new_cost
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -167,10 +194,38 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    import collections
+
+    default_cost = 1
+
+    opened_list = util.PriorityQueue()
+    opened_list.push(problem.getStartState(), 0)
+    closed_list = set()
+    history = {}
+    cost_so_far = collections.defaultdict(lambda: 0)
+
+    while not opened_list.isEmpty():
+        current_pos = opened_list.pop()
+        cost_so_far[current_pos] += default_cost
+
+        if problem.isGoalState(current_pos):
+            return back_track(current_pos, problem.getStartState(), history)
+
+        closed_list.add(current_pos)
+
+        for next_state in problem.getSuccessors(current_pos):
+            next_pos, next_direction, _ = next_state
+            new_cost = cost_so_far[current_pos]
+
+            if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
+                history[next_pos] = (current_pos, next_direction)
+                priority = new_cost + heuristic(next_pos, problem)
+                opened_list.push(next_pos, priority)
+                cost_so_far[next_pos] = new_cost
 
 
 # Abbreviations

@@ -116,6 +116,42 @@ After 11 moves: up
 Press return for the next state...
 ```
 
+### q3
+#### test1
+```python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs --frameTime 0```
+```
+[SearchAgent] using function ucs
+[SearchAgent] using problem type PositionSearchProblem
+Path found with total cost of 68 in 0.0 seconds
+Search nodes expanded: 269
+Pacman emerges victorious! Score: 442
+Average Score: 442.0
+Scores:        442.0
+Win Rate:      1/1 (1.00)
+Record:        Win
+```
+
+#### test2
+```python pacman.py -l mediumDottedMaze -p StayEastSearchAgent --frameTime 0```
+```
+
+```
+
+### q4
+#### test1
+```python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic --frameTime 0```
+```
+[SearchAgent] using function astar and heuristic manhattanHeuristic
+[SearchAgent] using problem type PositionSearchProblem
+Path found with total cost of 210 in 0.0 seconds
+Search nodes expanded: 549
+Pacman emerges victorious! Score: 300
+Average Score: 300.0
+Scores:        300.0
+Win Rate:      1/1 (1.00)
+Record:        Win
+```
+
 ## my notes
 1. ```problem.getSuccessors``` return: ```[((x, y), DIRECTION, cost)]```
 2. If Pacman moves too slowly for you, try the option --frameTime 0.
