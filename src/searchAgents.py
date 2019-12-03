@@ -339,7 +339,6 @@ class CornersProblem(search.SearchProblem):
             if not hitsWall:
                 if next_position in goals:
                     next_goals = tuple([x for x in goals if x != next_position])
-                    # next_goals = tuple(sorted(next_goals, key=lambda x: util.manhattanDistance(next_position, x)))
                 else:
                     next_goals = goals
                 next_state = (next_position, next_goals)
@@ -349,7 +348,6 @@ class CornersProblem(search.SearchProblem):
         successors = sorted(successors,
                key=lambda z:  (len(z[0][1]), min(
                    [util.manhattanDistance(z[0][0], g) for g in goals])))
-        # print(successors)
         return successors
 
     def getCostOfActions(self, actions):
