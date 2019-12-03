@@ -303,7 +303,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition, tuple(sorted(self.corners, key=lambda x: util.manhattanDistance(self.startingPosition, x)))
+        return self.startingPosition, self.corners#, tuple(sorted(self.corners, key=lambda x: util.manhattanDistance(self.startingPosition, x)))
 
     def isGoalState(self, state):
         """
@@ -337,18 +337,18 @@ class CornersProblem(search.SearchProblem):
             "*** YOUR CODE HERE ***"
             next_position = (nextx, nexty)
             if not hitsWall:
-                if currentPosition == goals[0]:
-                    next_goals = goals[1:]
-                    next_goals = tuple(sorted(next_goals, key=lambda x: util.manhattanDistance(next_position, x)))
+                if next_position in goals:
+                    next_goals = tuple([x for x in goals if x != next_position])
+                    # next_goals = tuple(sorted(next_goals, key=lambda x: util.manhattanDistance(next_position, x)))
                 else:
                     next_goals = goals
                 next_state = (next_position, next_goals)
                 successors.append((next_state, action, self.costFn(state)))
 
         self._expanded += 1 # DO NOT CHANGE
-        # successors = sorted(successors,
-        #        key=lambda z:  min(
-        #            [util.manhattanDistance(z[0][0], g) for g in goals]))
+        successors = sorted(successors,
+               key=lambda z:  (len(z[0][1]), min(
+                   [util.manhattanDistance(z[0][0], g) for g in goals])))
         # print(successors)
         return successors
 
