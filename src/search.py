@@ -90,9 +90,9 @@ def back_track(goal_state, start_state, history):
     current_state = goal_state
 
     while current_state != start_state:
-        next_position, next_direction = history[current_state]
-        result.append(next_direction)
-        current_state = next_position
+        previous_state, previous_direction = history[current_state]
+        result.append(previous_direction)
+        current_state = previous_state
 
     return result[::-1]
 
