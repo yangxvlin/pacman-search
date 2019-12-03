@@ -18,6 +18,8 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from game import Directions
+
 
 class SearchProblem:
     """
@@ -137,7 +139,8 @@ def breadthFirstSearch(problem):
     opened_list = util.Queue()
     opened_list.push(problem.getStartState())
 
-    history = {problem.getStartState(): problem.getStartState()}
+    history = {
+        problem.getStartState(): (problem.getStartState(), Directions.STOP)}
 
     while not opened_list.isEmpty():
         current_state = opened_list.pop()
@@ -159,8 +162,8 @@ def uniformCostSearch(problem):
 
     opened_list = util.PriorityQueue()
     opened_list.push(problem.getStartState(), 0)
-    closed_list = set()
-    history = {}
+    history = {
+        problem.getStartState(): (problem.getStartState(), Directions.STOP)}
     cost_so_far = collections.defaultdict(lambda: 0)
 
     while not opened_list.isEmpty():
@@ -169,13 +172,11 @@ def uniformCostSearch(problem):
         if problem.isGoalState(current_state):
             return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_state)
-
         for next_step in problem.getSuccessors(current_state):
             next_state, next_direction, step_cost = next_step
             new_cost = cost_so_far[current_state] + step_cost
 
-            if next_state not in cost_so_far or new_cost < cost_so_far[new_cost]:
+            if next_state not in cost_so_far or new_cost < cost_so_far[next_state]:
                 history[next_state] = (current_state, next_direction)
                 priority = new_cost + nullHeuristic(next_state, problem)
                 opened_list.push(next_state, priority)
@@ -197,7 +198,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     opened_list = util.PriorityQueue()
     opened_list.push(problem.getStartState(), 0)
-    closed_list = set()
     history = {}
     cost_so_far = collections.defaultdict(lambda: 0)
 
@@ -207,13 +207,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.isGoalState(current_state):
             return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_state)
-
         for next_step in problem.getSuccessors(current_state):
             next_state, next_direction, step_cost = next_step
             new_cost = cost_so_far[current_state] + step_cost
 
-            if next_state not in cost_so_far or new_cost < cost_so_far[new_cost]:
+            if next_state not in cost_so_far or new_cost < cost_so_far[next_state]:
                 history[next_state] = (current_state, next_direction)
                 priority = new_cost + heuristic(next_state, problem)
                 opened_list.push(next_state, priority)
