@@ -116,19 +116,19 @@ def depthFirstSearch(problem):
     history = {}
 
     while not opened_list.isEmpty():
-        current_pos = opened_list.pop()
+        current_state = opened_list.pop()
 
-        if problem.isGoalState(current_pos):
-            return back_track(current_pos, problem.getStartState(), history)
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_pos)
+        closed_list.add(current_state)
 
-        for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, _ = next_state
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, _ = next_step
 
-            if next_pos not in closed_list:
-                opened_list.push(next_pos)
-                history[next_pos] = (current_pos, next_direction)
+            if next_state not in closed_list:
+                opened_list.push(next_state)
+                history[next_state] = (current_state, next_direction)
 
 
 def breadthFirstSearch(problem):
@@ -136,23 +136,21 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     opened_list = util.Queue()
     opened_list.push(problem.getStartState())
-    closed_list = set()
-    history = {}
+
+    history = {problem.getStartState(): problem.getStartState()}
 
     while not opened_list.isEmpty():
-        current_pos = opened_list.pop()
+        current_state = opened_list.pop()
 
-        if problem.isGoalState(current_pos):
-            return back_track(current_pos, problem.getStartState(), history)
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_pos)
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, _ = next_step
 
-        for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, _ = next_state
-
-            if next_pos not in closed_list:
-                opened_list.push(next_pos)
-                history[next_pos] = (current_pos, next_direction)
+            if next_state not in history:
+                opened_list.push(next_state)
+                history[next_state] = (current_state, next_direction)
 
 
 def uniformCostSearch(problem):
@@ -166,22 +164,22 @@ def uniformCostSearch(problem):
     cost_so_far = collections.defaultdict(lambda: 0)
 
     while not opened_list.isEmpty():
-        current_pos = opened_list.pop()
+        current_state = opened_list.pop()
 
-        if problem.isGoalState(current_pos):
-            return back_track(current_pos, problem.getStartState(), history)
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_pos)
+        closed_list.add(current_state)
 
-        for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, step_cost = next_state
-            new_cost = cost_so_far[current_pos] + step_cost
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, step_cost = next_step
+            new_cost = cost_so_far[current_state] + step_cost
 
-            if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
-                history[next_pos] = (current_pos, next_direction)
-                priority = new_cost + nullHeuristic(next_pos, problem)
-                opened_list.push(next_pos, priority)
-                cost_so_far[next_pos] = new_cost
+            if next_state not in cost_so_far or new_cost < cost_so_far[new_cost]:
+                history[next_state] = (current_state, next_direction)
+                priority = new_cost + nullHeuristic(next_state, problem)
+                opened_list.push(next_state, priority)
+                cost_so_far[next_state] = new_cost
 
 
 def nullHeuristic(state, problem=None):
@@ -204,22 +202,22 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     cost_so_far = collections.defaultdict(lambda: 0)
 
     while not opened_list.isEmpty():
-        current_pos = opened_list.pop()
+        current_state = opened_list.pop()
 
-        if problem.isGoalState(current_pos):
-            return back_track(current_pos, problem.getStartState(), history)
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
 
-        closed_list.add(current_pos)
+        closed_list.add(current_state)
 
-        for next_state in problem.getSuccessors(current_pos):
-            next_pos, next_direction, step_cost = next_state
-            new_cost = cost_so_far[current_pos] + step_cost
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, step_cost = next_step
+            new_cost = cost_so_far[current_state] + step_cost
 
-            if next_pos not in cost_so_far or new_cost < cost_so_far[new_cost]:
-                history[next_pos] = (current_pos, next_direction)
-                priority = new_cost + heuristic(next_pos, problem)
-                opened_list.push(next_pos, priority)
-                cost_so_far[next_pos] = new_cost
+            if next_state not in cost_so_far or new_cost < cost_so_far[new_cost]:
+                history[next_state] = (current_state, next_direction)
+                priority = new_cost + heuristic(next_state, problem)
+                opened_list.push(next_state, priority)
+                cost_so_far[next_state] = new_cost
 
 
 # Abbreviations
