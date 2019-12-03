@@ -77,22 +77,22 @@ def tinyMazeSearch(problem):
 # ***************************** my code starts: *******************************
 
 
-def back_track(goal_position, start_position, history):
+def back_track(goal_state, start_state, history):
     """
-    :param goal_position: (x, y) position of the goal
-    :param start_position: (x, y) position of the start
+    :param goal_state:  goal
+    :param start_state:  start
     :param history: a dictionary of {(x, y):
                             (parent Position, direction from parent Position)}
-    :return: a list of Direction from `start_position` to `goal_position`
+    :return: a list of Direction from `start_state` to `goal_state`
     """
     result = []
 
-    current_position = goal_position
+    current_state = goal_state
 
-    while current_position != start_position:
-        next_position, next_direction = history[current_position]
+    while current_state != start_state:
+        next_position, next_direction = history[current_state]
         result.append(next_direction)
-        current_position = next_position
+        current_state = next_position
 
     return result[::-1]
 
