@@ -13,4 +13,4 @@
 
 ## my notes
 1. ```problem.getSuccessors``` return: ```[(next_state from `current_state` by `aciton`, DIRECTION, step_cost)]```
-2. If Pacman moves too slowly for you, try the option --frameTime 0.
+2. If Pacman moves too slowly for you, try the option ```--frameTime 0```.
