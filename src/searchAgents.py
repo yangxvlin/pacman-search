@@ -365,6 +365,17 @@ class CornersProblem(search.SearchProblem):
 
 
 def cornersHeuristic(state, problem):
+    def h(current_location, goal_locations):
+        result = 0
+
+        while len(goal_locations) > 0:
+            dists = [(util.manhattanDistance(current_location, g), g) for g in goal_locations]
+            dists = sorted(dists, key=lambda x: x[0])
+            current_location = dists[0][1]
+            result += dists[0][0]
+            goal_locations.remove(current_location)
+
+        return result
     """
     A heuristic for the CornersProblem that you defined.
 
@@ -382,7 +393,10 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     # return 0 # Default to trivial solution
-    return problem.number_of_corners - len(state[1])
+    current_position = state[0]
+    goals = state[1]
+
+    return h(current_position, list(goals))
 
 
 class AStarCornersAgent(SearchAgent):
