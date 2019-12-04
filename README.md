@@ -39,7 +39,19 @@
 
 6. run for part 3 run ```python pacman.py -l capsuleSearch -p CapsuleSearchAgent -a fn=wastar,prob=CapsuleSearchProblem,heuristic=foodHeuristic```
 
-    However I don't have [```capsuleSearch.lay```](./src/layouts/capsuleSearch.lay). So I made up one based on [```capsuleClassic.lay ```](./src/layouts/capsuleClassic.lay)
+    ```
+    [SearchAgent] using function wastar and heuristic foodHeuristic
+    [SearchAgent] using problem type CapsuleSearchProblem
+    Path found with total cost of 42 in 2.8 seconds
+    Search nodes expanded: 1379
+    Pacman emerges victorious! Score: 548
+    Average Score: 548.0
+    Scores:        548.0
+    Win Rate:      1/1 (1.00)
+    Record:        Win
+    ```
+
+    What's more, I have [```capsuleSearch2.lay```](./src/layouts/capsuleSearch2.lay). And it is made up based on [```capsuleClassic.lay ```](./src/layouts/capsuleClassic.lay)
     
     ```
     [SearchAgent] using function wastar and heuristic foodHeuristic
