@@ -288,14 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        # self.next_goal = {}
-        self.number_of_corners = len(self.corners)
-        # for i in range(0, self.number_of_corners):
-        #     j = i + 1
-        #     if j < self.number_of_corners:
-        #         self.next_goal[self.corners[i]] = self.corners[j]
         self.costFn = lambda x: 1
-        # self.goals = ((1,1), (1,top), (right, top), (right, 1))
 
     def getStartState(self):
         """
@@ -322,8 +315,7 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-        currentPosition = state[0]
-        goals = state[1]
+        currentPosition, goals = state
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
@@ -346,7 +338,7 @@ class CornersProblem(search.SearchProblem):
 
         self._expanded += 1 # DO NOT CHANGE
         successors = sorted(successors,
-               key=lambda z:  (len(z[0][1]), min(
+               key=lambda z: (len(z[0][1]), min(
                    [util.manhattanDistance(z[0][0], g) for g in goals])))
         return successors
 
@@ -371,7 +363,7 @@ def cornersHeuristic(state, problem):
         while len(goal_locations) > 0:
             dists = [(util.manhattanDistance(current_location, g), g) for g in goal_locations]
             dists = sorted(dists, key=lambda x: x[0])
-            current_location = dists[0][1]
+            _, current_location = dists[0]
             result += dists[0][0]
             goal_locations.remove(current_location)
 
@@ -393,8 +385,7 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     # return 0 # Default to trivial solution
-    current_position = state[0]
-    goals = state[1]
+    current_position, goals = state
 
     return h(current_position, list(goals))
 
