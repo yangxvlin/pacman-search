@@ -218,8 +218,72 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 cost_so_far[next_state] = new_cost
 
 
+def depth_limited_search(problem, depth_limit):
+    opened_list = util.Stack()
+    opened_list.push((problem.getStartState(), 1))
+    closed_list = set()
+    history = {}
+
+    while not opened_list.isEmpty():
+        current_state, depth = opened_list.pop()
+
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
+
+        closed_list.add(current_state)
+
+        if depth > depth_limit:
+            continue
+
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, _ = next_step
+
+            if next_state not in closed_list:
+                opened_list.push((next_state, depth+1))
+                history[next_state] = (current_state, next_direction)
+
+    return None
+
+
+def iterative_deepening_search(problem):
+    depth = 1
+
+    while True:
+        result = depth_limited_search(problem, depth)
+        if result is not None:
+            return result
+        depth += 1
+
+
+def weighted_a_star_search(problem, heuristic=nullHeuristic, weight=2):
+    import collections
+
+    opened_list = util.PriorityQueue()
+    opened_list.push(problem.getStartState(), 0)
+    history = {}
+    cost_so_far = collections.defaultdict(lambda: 0)
+
+    while not opened_list.isEmpty():
+        current_state = opened_list.pop()
+
+        if problem.isGoalState(current_state):
+            return back_track(current_state, problem.getStartState(), history)
+
+        for next_step in problem.getSuccessors(current_state):
+            next_state, next_direction, step_cost = next_step
+            new_cost = cost_so_far[current_state] + step_cost
+
+            if next_state not in cost_so_far or new_cost < cost_so_far[next_state]:
+                history[next_state] = (current_state, next_direction)
+                priority = new_cost + weight * heuristic(next_state, problem)
+                opened_list.push(next_state, priority)
+                cost_so_far[next_state] = new_cost
+
+
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+ids = iterative_deepening_search
+wastar = weighted_a_star_search
