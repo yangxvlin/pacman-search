@@ -289,6 +289,7 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.costFn = lambda x: 1
+        self.start_game_state = startingGameState
 
     def getStartState(self):
         """
@@ -296,7 +297,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition, self.corners#, tuple(sorted(self.corners, key=lambda x: util.manhattanDistance(self.startingPosition, x)))
+        return self.startingPosition, self.corners
 
     def isGoalState(self, state):
         """
@@ -356,18 +357,75 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+def h(start, goal_locations):
+    """
+    not good enough
+    :param start: location to start
+    :param goal_locations:  list of locations to go to
+    :return: from start location to all locations manhattan distance
+    """
+    result = 0
+    current_location = start
+
+    while len(goal_locations) > 0:
+        dists = [(util.manhattanDistance(current_location, g), g) for g in goal_locations]
+        dists = sorted(dists, key=lambda x: x[0])
+        _, current_location = dists[0]
+        result += dists[0][0]
+        goal_locations.remove(current_location)
+
+    return result / 2
+
+
+def h1(start, goal_locations, game_state):
+    """
+    inconsistent
+    :param game_state: game_state
+    :param start: location to start
+    :param goal_locations:  list of locations to go to
+    :return: from start location to all locations manhattan distance
+    """
+    result = 0
+    current_location = start
+
+    while len(goal_locations) > 0:
+        dists = [(mazeDistance1(current_location, g, game_state), g) for g in goal_locations]
+        dists = sorted(dists, key=lambda x: x[0])
+        _, current_location = dists[0]
+        result += dists[0][0]
+        goal_locations.remove(current_location)
+
+    return result / 2
+
+
+def h2(start, goal_locations):
+    """
+    :param start: location to start
+    :param goal_locations:  list of locations to go to
+    :return: from start location to most far goal manhattan distance
+    """
+    result = [0]
+
+    for goal in goal_locations:
+        result.append(util.manhattanDistance(start, goal))
+    return max(result)
+
+
+def h3(start, goal_locations, game_state):
+    """
+    :param game_state: game_state
+    :param start: location to start
+    :param goal_locations:  list of locations to go to
+    :return: from start location to most far goal maze distance distance
+    """
+    result = [0]
+
+    for goal in goal_locations:
+        result.append(mazeDistance1(start, goal, game_state))
+    return max(result)
+
+
 def cornersHeuristic(state, problem):
-    def h(current_location, goal_locations):
-        result = 0
-
-        while len(goal_locations) > 0:
-            dists = [(util.manhattanDistance(current_location, g), g) for g in goal_locations]
-            dists = sorted(dists, key=lambda x: x[0])
-            _, current_location = dists[0]
-            result += dists[0][0]
-            goal_locations.remove(current_location)
-
-        return result
     """
     A heuristic for the CornersProblem that you defined.
 
@@ -386,8 +444,9 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     # return 0 # Default to trivial solution
     current_position, goals = state
-
-    return h(current_position, list(goals))
+    # return h(current_position, list(goals))
+    # return h1(current_position, list(goals), problem.start_game_state)
+    return h2(current_position, list(goals))
 
 
 class AStarCornersAgent(SearchAgent):
@@ -482,7 +541,10 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # return h(position, foodGrid.asList())
+    # return h1(position, foodGrid.asList(), problem.startingGameState)
+    # return h2(position, foodGrid.asList())
+    return h3(position, foodGrid.asList(), problem.startingGameState)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -513,7 +575,19 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        foods = food.asList()
+        # print(foods)
+        point1 = startPosition
+        dists = [(mazeDistance1(point1, g, gameState), g) for g in foods]
+        dists = sorted(dists, key=lambda x: x[0])
+        _, point2 = dists[0]
+        prob = PositionSearchProblem(gameState, start=point1, goal=point2,
+                                     warn=False, visualize=False)
+
+        # actions = search.ucs(prob)
+        actions = search.astar(prob, heuristic=manhattanHeuristic)
+        return actions
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -549,7 +623,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (x, y) in self.food.asList()
 
 def mazeDistance(point1, point2, gameState):
     """
@@ -568,3 +642,21 @@ def mazeDistance(point1, point2, gameState):
     assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
     prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
     return len(search.bfs(prob))
+
+def mazeDistance1(point1, point2, gameState):
+    """
+    Returns the maze distance between any two points, using the search functions
+    you have already built. The gameState can be any game state -- Pacman's
+    position in that state is ignored.
+
+    Example usage: mazeDistance( (2,4), (5,6), gameState)
+
+    This might be a useful helper function for your ApproximateSearchAgent.
+    """
+    x1, y1 = point1
+    x2, y2 = point2
+    walls = gameState.getWalls()
+    assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
+    assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
+    prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
+    return len(search.ucs(prob))
