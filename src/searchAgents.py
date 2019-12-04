@@ -544,7 +544,11 @@ def foodHeuristic(state, problem):
     # return h(position, foodGrid.asList())
     # return h1(position, foodGrid.asList(), problem.startingGameState)
     # return h2(position, foodGrid.asList())
-    return h3(position, foodGrid.asList(), problem.startingGameState)
+
+    if not isinstance(foodGrid, tuple):
+        return h3(position, foodGrid.asList(), problem.startingGameState)
+    else:
+        return h3(position, foodGrid, problem.startingGameState)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -660,3 +664,106 @@ def mazeDistance1(point1, point2, gameState):
     assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
     prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
     return len(search.ucs(prob))
+
+from pacman import GameState
+
+
+class CapsuleSearchProblem(FoodSearchProblem):
+    def __init__(self, start_game_state: GameState):
+        super().__init__(start_game_state)
+        self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
+        self.startingPosition = start_game_state.getPacmanPosition()
+
+        self.capsules = tuple(start_game_state.getCapsules())
+        self.foods = start_game_state.getFood()
+        self.walls = start_game_state.getWalls()
+
+        self.costFn = lambda x: 1
+        self.start_game_state = start_game_state
+
+        self.is_eating_capsule = True
+
+    def getStartState(self):
+        """
+        Returns the start state for the search problem.
+        """
+        return self.start_game_state.getPacmanPosition(), self.capsules
+
+    def isGoalState(self, state):
+        """
+          state: Search state
+
+        Returns True if and only if the state is a valid goal state.
+        """
+        current_position, goals = state
+        is_eating_capsule = self.check_is_eating_capsule(goals)
+
+        if is_eating_capsule:
+            return False
+        else:
+            return super().isGoalState(state)
+
+    def check_is_eating_capsule(self, goals):
+        return isinstance(goals, type(self.capsules)) and self.capsules == goals
+
+    def getSuccessors(self, state):
+        """
+          state: Search state
+
+        For a given state, this should return a list of triples, (successor,
+        action, stepCost), where 'successor' is a successor to the current
+        state, 'action' is the action required to get there, and 'stepCost' is
+        the incremental cost of expanding to that successor.
+        """
+
+        current_position, goals = state
+
+        is_eating_capsule = self.check_is_eating_capsule(goals)
+
+        successors = []
+
+        # trying to eat capsule
+        if is_eating_capsule:
+            self._expanded += 1  # DO NOT CHANGE
+
+            for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+                # Add a successor state to the successor list if the action is legal
+                # Here's a code snippet for figuring out whether a new position hits a wall:
+                x,y = current_position
+                dx, dy = Actions.directionToVector(action)
+                nextx, nexty = int(x + dx), int(y + dy)
+                # print((nextx, nexty))
+                hitsWall = self.walls[nextx][nexty]
+                next_position = (nextx, nexty)
+
+                if is_eating_capsule:
+                    is_in_goal = next_position in goals
+                else:
+                    is_in_goal = goals[nextx][nexty]
+
+                if not hitsWall:
+                    # can't eat food currently
+                    if not self.foods[nextx][nexty]:
+                        # eat a capsule
+                        # print("goals: ", goals)
+                        if is_in_goal:
+                            next_state = (next_position, self.foods)
+                        # keep moving
+                        else:
+                            next_state = (next_position, goals)
+                        successors.append((next_state, action, self.costFn(state)))
+
+            return successors
+
+        # trying to eat all foods
+        else:
+            return super().getSuccessors(state)
+
+
+class CapsuleSearchAgent(SearchAgent):
+    """
+    A SearchAgent for FoodSearchProblem using weighted A* and foodHeuristic
+    """
+
+    def __init__(self, fn, prob, heuristic):
+        super().__init__(fn, prob, heuristic)
